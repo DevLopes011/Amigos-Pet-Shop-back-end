@@ -1,0 +1,20 @@
+{
+  "name": "amigos-pet-shop-back-end",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "serverless": "^4.4.7",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "serverless-create-global-dynamodb-table": "^3.1.1",
+    "serverless-offline": "^14.3.4"
+  }
+}
