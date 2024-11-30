@@ -1,0 +1,159 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: lopes011
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: AmigosPetShop
+frameworkVersion: "4"
+
+plugins:
+  - serverless-offline
+  - serverless-create-global-dynamodb-table
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+  region: us-east-1
+  httpApi:
+    cors:
+      allowedOrigins:
+        - "*"
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS 
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: 
+        - !GetAtt PerguntasAmigosPetShop.Arn
+        - !GetAtt UsersAmigosPetShop.Arn
+
+
+functions:
+# Message
+  createMessage:
+    handler: Questions/handler.createMessage
+    events:
+      - httpApi:
+          path: /message
+          method: post
+
+  listMessages:
+    handler: Questions/handler.listarMessages
+    events:
+      - httpApi:
+          path: /message
+          method: get
+
+  listMessage:
+    handler: Questions/handler.listarMessage
+    events:
+      - httpApi:
+          path: /message/{id}
+          method: get
+
+  updateMessage:
+    handler: Questions/handler.updateMessage
+    events:
+      - httpApi:
+          path: /message/{id}
+          method: put
+
+  deleteMessage:
+    handler: Questions/handler.deleteMessage
+    events:
+      - httpApi:
+          path: /message/{id}
+          method: delete
+  # User
+  createUser:
+    handler: Users/handlerUsers.createUser
+    events:
+      - httpApi:
+          path: /user
+          method: post
+
+  listUsers:
+    handler: Users/handlerUsers.listUsers
+    events:
+      - httpApi:
+          path: /user
+          method: get
+
+  listUser:
+    handler: Users/handlerUsers.listUser
+    events:
+      - httpApi:
+          path: /user/{id}
+          method: get
+
+  updateUser:
+    handler: Users/handlerUsers.updateUser
+    events:
+      - httpApi:
+          path: /user/{id}
+          method: put
+
+  deleteUser:
+    handler: Users/handlerUsers.deleteUser
+    events:
+      - httpApi:
+          path: /user/{id}
+          method: delete
+
+  loginUser:
+    handler: Users/handlerUsers.loginUser
+    events:
+      - httpApi:
+          path: /user/login
+          method: post
+
+
+resources:
+  Resources:
+    PerguntasAmigosPetShop:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: perguntas-amigospetshop
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    UsersAmigosPetShop:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: users-amigospetshop
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+custom:
+  globalTables:
+    version: v1
+    regions: 
+      - us-east-1
+    createStack: true 
