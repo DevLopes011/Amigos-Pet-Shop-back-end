@@ -223,6 +223,7 @@ exports.loginUser = async (event) => {
   try {
     const { email, password } = JSON.parse(event.body)
 
+
     const localParams = {
       ...params,
       FilterExpression: "email = :email AND password = :password",
